@@ -1,8 +1,10 @@
 ---
-title: "Lab 04: Analysis of Variance"
+title: 'Lab 04: Analysis of Variance'
 author: "Isaac Plotkin"
 date: "2/11/2022"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,6 +14,7 @@ library(knitr)
 library(broom)
 ```
 
+1.
 ```{r}
 data(diamonds)
 
@@ -20,6 +23,8 @@ diamonds_5c <- subset(diamonds, carat == 0.5)
 ```
 There are 1,258 observations in the new dataset.
 
+
+2.
 ```{r}
 p1 <- ggplot(data = diamonds_5c, aes(x = cut)) +
   geom_bar() + 
@@ -30,7 +35,7 @@ p1
 
 Fair and Good cuts have the fewest number of observations.
 
-
+3.
 ```{r}
 diamonds_new <- mutate(diamonds_5c, cut = fct_recode(cut, "FairGood" = "Fair", "FairGood" = "Good"))
 
@@ -39,6 +44,7 @@ diamonds_new
 The variable cut got recoded correctly.
 
 
+4.
 ```{r}
 pvc <- ggplot(data = diamonds_new, aes(x = cut, y = price)) +
   geom_boxplot() +
@@ -46,6 +52,7 @@ pvc <- ggplot(data = diamonds_new, aes(x = cut, y = price)) +
 
 pvc
 ```
+5.
 ```{r}
 print(summary(diamonds_new$cut))
 summary <- aggregate(price~cut, diamonds_new, function(x) c(mean = mean(x), sd = sd(x)))
@@ -53,17 +60,18 @@ summary <- aggregate(price~cut, diamonds_new, function(x) c(mean = mean(x), sd =
 summary[-1][[1]]
 ```
 
-There appears to be a relationship between the cut and price for diamonds that are 0.5 carats because the box plot and summary statistics show
+6. There appears to be a relationship between the cut and price for diamonds that are 0.5 carats because the box plot and summary statistics show
 that the mean is increasing as the quality of the cut increases. 
 
 
 # ANOVA
 
-The assumptions for ANOVA are satisfied because the distribution of price appears normal within each cut category. 
+7. The assumptions for ANOVA are satisfied because the distribution of price appears normal within each cut category. 
 All the observations are collected separately so independence is satisfied. Lastly constant variance is satisfied because all of the standard
 deviations are close in size.
 
 
+8.
 ```{r}
 model <- lm(price ~ cut, data = diamonds_new)
 tidy(model, conf.int = TRUE) %>%
@@ -72,7 +80,7 @@ tidy(model, conf.int = TRUE) %>%
 kable(anova(model), format="markdown", digits = 3)
 ```
 
-Total variation = SST/DFT
+9. Total variation = SST/DFT
 ```{r}
 total_variation <- 150706506/1257
 total_variation
@@ -80,11 +88,21 @@ total_variation
 
 
 
+10. (theta)^2 = SSW/DFW  (DFW = 1258-4)
+
+```{r}
+11507056/1254
+```
 
 
+11. The null hypothesis is that the cut of a diamond does not cause variability in the price of a diamond. 
+The alternative hypothesis is that the cut of a diamond does cause variability in the price of a diamond. 
 
 
+12. The conclusion is that the null hypothesis is rejected because the p value for cut~0.This means that the cut of the diamonds have different means. Therefore the cut of a diamond has a direct affect on the price.
 
+
+13. Based on the box plot and ANOVA table it is clear that the higher the grade of the cut, the higher the price of the diamond. 
 
 
 
