@@ -1,0 +1,31 @@
+---
+title: "Lab 04: Analysis of Variance"
+author: "Isaac Plotkin"
+date: "2/11/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+library(broom)
+```
+
+```{r}
+data(diamonds)
+
+diamonds_5c <- subset(diamonds, carat == 0.5)
+
+```
+There are 1,258 observations in the new dataset.
+
+```{r}
+p1 <- ggplot(data = diamonds_5c, aes(x = cut)) +
+  geom_bar() + 
+  labs(title = "Party Size", 
+       x = "", y = "")
+
+
+```
+
