@@ -23,9 +23,73 @@ There are 1,258 observations in the new dataset.
 ```{r}
 p1 <- ggplot(data = diamonds_5c, aes(x = cut)) +
   geom_bar() + 
-  labs(title = "Party Size", 
-       x = "", y = "")
+  labs(title = "Diamond Cut Quality")
 
-
+p1
 ```
+
+Fair and Good cuts have the fewest number of observations.
+
+
+```{r}
+diamonds_new <- mutate(diamonds_5c, cut = fct_recode(cut, "FairGood" = "Fair", "FairGood" = "Good"))
+
+diamonds_new
+```
+The variable cut got recoded correctly.
+
+
+```{r}
+pvc <- ggplot(data = diamonds_new, aes(x = cut, y = price)) +
+  geom_boxplot() +
+  labs(title = "Price vs. Cut")
+
+pvc
+```
+```{r}
+print(summary(diamonds_new$cut))
+summary <- aggregate(price~cut, diamonds_new, function(x) c(mean = mean(x), sd = sd(x)))
+
+summary[-1][[1]]
+```
+
+There appears to be a relationship between the cut and price for diamonds that are 0.5 carats because the box plot and summary statistics show
+that the mean is increasing as the quality of the cut increases. 
+
+
+# ANOVA
+
+The assumptions for ANOVA are satisfied because the distribution of price appears normal within each cut category. 
+All the observations are collected separately so independence is satisfied. Lastly constant variance is satisfied because all of the standard
+deviations are close in size.
+
+
+```{r}
+model <- lm(price ~ cut, data = diamonds_new)
+tidy(model, conf.int = TRUE) %>%
+  kable(format = "markdown", digits = 3)
+
+kable(anova(model), format="markdown", digits = 3)
+```
+
+Total variation = SST/DFT
+```{r}
+total_variation <- 150706506/1257
+total_variation
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
